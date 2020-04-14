@@ -5,3 +5,4 @@ test_that("Nonsyntactic variable names are accepted", {
   p <- direct.label(ggplot(mpg2, aes(hwy, cty, colour=`car class`)) + geom_point())
   expect_is(p, "ggplot")
 })
+# Toggle Github Action
