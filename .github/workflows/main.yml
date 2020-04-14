@@ -1,0 +1,38 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+    paths-ignore: 
+      - '.github/workflows/**'
+  pull_request:
+    branches: [ master ]
+    
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Install System Dependencies for devtools
+      run: sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+    - name: Install R on VM
+      run: sudo apt install r-base
+    - name: Install Rperform and Start Benchmark
+      run: sudo R -e 'install.packages("devtools");devtools::install_github("LooDaHu/Rperform", ref="test");devtools::install_dev_deps();Rperform::run_all_test(num_commits=5);q()'
+      continue-on-error: true
+    - name: Commit and Push Benchmark Result
+      run: |
+          git config --global user.name 'LooDaHu'
+          git config --global user.email 'LooDaHu@users.noreply.github.com'
+          git add Rperform_Data/
+          git commit -m "Benchmark Result Update"
+          git push
