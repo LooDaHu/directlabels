@@ -10,3 +10,4 @@ if(require(ggplot2)){
   detach("package:ggplot2")
   directlabels::direct.label(no.labels, "smart.grid")
 }
+# Meaningless comment for toggle
