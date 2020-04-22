@@ -9,6 +9,7 @@ on:
     branches: [ master ]
     paths-ignore: 
       - '.github/workflows/**'
+      - 'Rperform_Data'
   pull_request:
     branches: [ master ]
     
@@ -25,9 +26,13 @@ jobs:
     - name: Install System Dependencies for devtools
       run: sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
     - name: Install R on VM
-      run: sudo apt install r-base
+      run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+          sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+          sudo apt update
+          sudo apt install r-base
     - name: Install Rperform and Start Benchmark
-      run: sudo R -e 'install.packages("devtools");devtools::install_github("LooDaHu/Rperform", ref="test");devtools::install_dev_deps();Rperform::run_all_test(num_commits=5);q()'
+      run: sudo R -e 'install.packages("devtools");devtools::install_github("LooDaHu/Rperform");devtools::install_dev_deps();Rperform::run_all_test(num_commits=5);q()'
       continue-on-error: true
     - name: Commit and Push Benchmark Result
       run: |
